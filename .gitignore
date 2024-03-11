@@ -10,3 +10,4 @@ wheelhouse
 ssh2/libssh2.so*
 doc/_build
 ven*
+.vscode

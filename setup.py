@@ -5,7 +5,7 @@ from glob import glob
 
 from _setup_libssh2 import build_ssh2
 
-import versioneer
+# import versioneer
 from setuptools import setup, find_packages
 
 cpython = platform.python_implementation() == 'CPython'
@@ -87,15 +87,15 @@ if ON_WINDOWS:
         'msvc*.dll', 'vcruntime*.dll',
     ])
 
-cmdclass = versioneer.get_cmdclass()
-if USING_CYTHON:
-    cmdclass['build_ext'] = build_ext
+# cmdclass = versioneer.get_cmdclass()
+# if USING_CYTHON:
+#     cmdclass['build_ext'] = build_ext
 
 setup(
-    name='ssh2-python',
-    version=versioneer.get_version(),
-    cmdclass=cmdclass,
-    url='https://github.com/ParallelSSH/ssh2-python',
+    name='ssh2-python312',
+    version="0.1.0",
+    # cmdclass=cmdclass,
+    url='https://github.com/jacobcallahan/ssh2-python',
     license='LGPLv2',
     author='Panos Kittenis',
     author_email='22e889d8@opayq.com',
@@ -116,11 +116,9 @@ setup(
         'Programming Language :: C',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'Topic :: System :: Shells',
         'Topic :: System :: Networking',
         'Topic :: Software Development :: Libraries',
@@ -128,7 +126,6 @@ setup(
         'Operating System :: POSIX',
         'Operating System :: POSIX :: Linux',
         'Operating System :: POSIX :: BSD',
-        'Operating System :: Microsoft :: Windows',
         'Operating System :: MacOS :: MacOS X',
     ],
     ext_modules=cythonize(extensions, **cython_args) if USING_CYTHON else extensions,

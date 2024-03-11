@@ -13,11 +13,11 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-FROM quay.io/pypa/manylinux2010_x86_64
+FROM quay.io/pypa/manylinux2014_x86_64
 
-ENV OPENSSL openssl-1.1.1q
+ENV OPENSSL openssl-3.1.4
 ENV SYSTEM_LIBSSH2 1
-ENV LIBSSH2_VERSION 1.10.0
+ENV LIBSSH2_VERSION 1.11.0
 
 RUN yum install zlib-devel -y
 
