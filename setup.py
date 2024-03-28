@@ -5,7 +5,6 @@ from glob import glob
 
 from _setup_libssh2 import build_ssh2
 
-# import versioneer
 from setuptools import setup, find_packages
 
 cpython = platform.python_implementation() == 'CPython'
@@ -41,7 +40,6 @@ _libs = ['ssh2'] if not ON_WINDOWS else [
     'zlibstatic',
 ]
 
-# _comp_args = ["-ggdb"]
 _fwd_default = 0
 _comp_args = ["-O2"] if not ON_WINDOWS else None
 
@@ -87,14 +85,9 @@ if ON_WINDOWS:
         'msvc*.dll', 'vcruntime*.dll',
     ])
 
-# cmdclass = versioneer.get_cmdclass()
-# if USING_CYTHON:
-#     cmdclass['build_ext'] = build_ext
-
 setup(
     name='ssh2-python312',
-    version="0.1.0",
-    # cmdclass=cmdclass,
+    version="0.1.1",
     url='https://github.com/jacobcallahan/ssh2-python',
     license='LGPLv2',
     author='Panos Kittenis',
@@ -127,6 +120,7 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Operating System :: POSIX :: BSD',
         'Operating System :: MacOS :: MacOS X',
+        # 'Operating System :: Microsoft :: Windows',
     ],
     ext_modules=cythonize(extensions, **cython_args) if USING_CYTHON else extensions,
     package_data=package_data,
