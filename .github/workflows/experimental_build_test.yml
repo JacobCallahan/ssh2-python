@@ -1,0 +1,113 @@
+name: Experimental Test Builds
+
+env:
+  DEFAULT_PYTHON_VERSION: '3.13-dev'
+
+on:
+  schedule:
+    - cron: '0 0 * * 3'
+  workflow_dispatch:
+    inputs:
+      python-version:
+        description: 'Python version to use'
+        required: true
+        default: ${{ env.DEFAULT_PYTHON_VERSION }}
+
+jobs:
+  build_sdist:
+    name: Build sdist
+    runs-on: ubuntu-latest
+    outputs:
+      sdist_file: ${{ steps.save-path.outputs.sdist_name }}
+    steps:
+      - name: Checkout ssh2-python
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ github.event.inputs.python-version || env.DEFAULT_PYTHON_VERSION }}
+
+      - name: Build sdist
+        run: |
+          python -m pip install build
+          python -m build --sdist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdist
+          path: ./dist/*
+
+      - name: Sanity check sdist files
+        run: |
+          ls ./dist
+
+      - name: Output sdist name
+        id: save-path
+        shell: bash -el {0}
+        run: echo "sdist_name=$(ls ./dist)" >> "$GITHUB_OUTPUT"
+
+  build_wheels:
+    needs: build_sdist
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # macos-13 is an intel runner, macos-14 is an arm runner
+        os: [ubuntu-latest, macos-13, macos-14, windows-latest]
+
+    steps:
+      - name: Checkout ssh2-python
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download sdist
+        uses: actions/download-artifact@v4
+        with:
+          name: sdist
+          path: ./dist
+
+      - name: Output sdist name
+        id: save-path
+        shell: bash -el {0}
+        run: echo "sdist_name=$(ls ./dist)" >> "$GITHUB_ENV"
+
+      - name: Unzip sdist (macOS)
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          tar -xzf ./dist/${{ env.sdist_name }} -C ./dist
+
+      - name: Output sdist name (macOS)
+        id: save-path2
+        shell: bash -el {0}
+        run: echo "sdist_name=$(cd ./dist && ls -d */)" >> "$GITHUB_ENV"
+
+      - name: Set up Python ${{ matrix.cibw_python }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.cibw_python }}
+
+      - name: Install python dependencies
+        run: |
+            pip install --upgrade pip
+            pip install -r requirements_dev.txt
+
+      - name: Build normal wheels
+        uses: pypa/cibuildwheel@v2.17
+        with:
+         package-dir: ./dist/${{ startsWith(matrix.os, 'macos') && env.sdist_name || needs.build_sdist.outputs.sdist_file }}
+        env:
+          CIBW_SKIP: "*musllinux*"
+          CIBW_BUILD: "cp310-* cp311-* cp312-*"
+          CIBW_PRERELEASE_PYTHONS: True
+          CIBW_BEFORE_ALL_LINUX: "yum install -y cmake openssh-server openssl-devel"
+          CIBW_BEFORE_ALL_MACOS: "brew install cmake libssh2"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
+          path: ./wheelhouse/*.whl
