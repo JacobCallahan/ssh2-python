@@ -8,7 +8,7 @@ on:
       python-version:
         description: 'Python version to use'
         required: true
-        default: 3.13-dev
+        default: '3.13-dev'
 
 jobs:
   build_sdist:
@@ -25,7 +25,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ github.event.inputs.python-version || 3.13-dev }}
+          python-version: ${{ github.event.inputs.python-version || '3.13-dev' }}
 
       - name: Build sdist
         run: |
