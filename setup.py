@@ -3,6 +3,9 @@ import os
 import sys
 from glob import glob
 
+# Ensure SYSTEM_LIBSSH2 is set to 0 or unset to bundle libssh2
+os.environ['SYSTEM_LIBSSH2'] = '0'
+
 from _setup_libssh2 import build_ssh2
 
 from setuptools import setup, find_packages
@@ -27,8 +30,7 @@ if not SYSTEM_LIBSSH2 and (len(sys.argv) >= 2 and not (
         '--help' in sys.argv[1:] or
         sys.argv[1] in (
             '--help-commands', 'egg_info', '--version', 'clean',
-            'sdist', '--long-description')) and
-                           __name__ == '__main__'):
+            'sdist', '--long-description'))):
     build_ssh2()
 
 ext = 'pyx' if USING_CYTHON else 'c'
@@ -60,7 +62,7 @@ if USING_CYTHON:
 
 runtime_library_dirs = ["$ORIGIN/."] if not SYSTEM_LIBSSH2 else None
 _lib_dir = os.path.abspath("./build_dir/src") if not SYSTEM_LIBSSH2 else "/usr/local/lib"
-include_dirs = ["libssh2/include"] if ON_WINDOWS or not SYSTEM_LIBSSH2 else ["/usr/local/include"]
+include_dirs = ["libssh2/include", "/usr/local/include"] if ON_WINDOWS or not SYSTEM_LIBSSH2 else ["/usr/local/include"]
 
 extensions = [
     Extension(sources[i].split('.')[0].replace(os.path.sep, '.'),
