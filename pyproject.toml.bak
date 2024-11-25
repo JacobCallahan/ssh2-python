@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=42", "wheel", "cython"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ssh2-python"
+version = "0.1.2"
+description = "Bindings for libssh2 C library"
+authors = [
+    { name = "Panos Kittenis", email = "22e889d8@opayq.com" },
+    { name = "Jacob Callahan", email = "jacob.callahan05@gmail.com"}
+]
+license = { text = "LGPLv2" }
+readme = "README.rst"
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2)",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: C",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: System :: Shells",
+    "Topic :: System :: Networking",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Operating System :: POSIX",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: POSIX :: BSD",
+    "Operating System :: MacOS :: MacOS X"
+]
+
+[project.urls]
+homepage = "https://github.com/jacobcallahan/ssh2-python"
+
+[tool.setuptools]
+packages = ["ssh2"]
+
+[tool.setuptools.package-data]
+"ssh2" = ["*.pxd", "libssh2.so*"]
+
+[tool.setuptools.package-data.windows]
+"ssh2" = ["libcrypto*.dll", "libssl*.dll", "msvc*.dll", "vcruntime*.dll"]
+
+[tool.cython]
+language_level = 3

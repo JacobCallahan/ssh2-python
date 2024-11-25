@@ -87,7 +87,7 @@ if ON_WINDOWS:
 
 setup(
     name='ssh2-python312',
-    version="0.1.1",
+    version="0.1.2",
     url='https://github.com/jacobcallahan/ssh2-python',
     license='LGPLv2',
     author='Panos Kittenis',
@@ -112,6 +112,7 @@ setup(
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
         'Topic :: System :: Shells',
         'Topic :: System :: Networking',
         'Topic :: Software Development :: Libraries',
